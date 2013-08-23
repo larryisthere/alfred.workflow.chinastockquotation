@@ -86,12 +86,20 @@ class Stock extends Workflows {
     protected function output() {
         //  $suggest->id, $suggest->alt, $suggest->title, '作者: '. implode(",", $suggest->author) .' 评分: '. $suggest->rating->average .'/'. $suggest->rating->numRaters .' 标签: '. implode(",", array_map('get_name', $suggest->tags)), 'C5C34466-B858-4F14-BF5E-FD05FA0903DA.png' 
         foreach ($this->stocks as $key => $value) {
-            $change = round(($value['now']-$value['closing'])/$value['closing']*10000)/100;
-            $change = ($change > 0 ? '+'.$change : $change).'%';
+            $now    = intval($value['now']);
+            $now    = $now > 0 ? $value['now'] : '停牌';
+            if(is_numeric($now)) {
+                $change = round(($value['now']-$value['closing'])/$value['closing']*10000)/100;
+                $change = ($change > 0 ? '+'.$change : $change).'%';
+            } else {
+                $change = '';
+            }
+            $name   = $value['name'];
+            $name   = strlen(utf8_decode($name)) < 4 ? $name.'　' : $name;
             $volume = floor($value['volume'] / 100);
             $amount = floor($value['amount'] / 10000);
             $arg    = "http://finance.sina.com.cn/realstock/company/".$value['type'].$value['code']."/nc.shtml";
-            $this->result(md5($value['name']), $arg, $value['code'].'  '.$value['name'].'  '.$value['now'].' ('.$change.')', '量: '.$volume.'手 额: '. $amount.'万 买: '.$value['buy'].' 卖: '.$value['sell'].' 高: '.$value['high'].' 低: '.$value['low'].' 开: '.$value['opening'].' 收: '.$value['closing'], $value['type'].'.png');
+            $this->result(md5($name), $arg, $value['code'].'  '.$name.'  '.$now.'  '.$change, '量: '.$volume.'手 额: '. $amount.'万 买: '.$value['buy'].' 卖: '.$value['sell'].' 高: '.$value['high'].' 低: '.$value['low'].' 开: '.$value['opening'].' 收: '.$value['closing'], $value['type'].'.png');
         }
         if(count($this->results()) == 0) {
             $this->result('0','null','没能找到相应的股票','您可能输入了错误的代码，请检查一下吧','tip.png');
