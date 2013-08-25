@@ -10,18 +10,20 @@ Realtime China stock quotation, support all companies &amp; indexes of Shanghai 
 3. Stock is right there
 4. Stroke "Enter" to open a webpage of that stock with default browse
 
-###Todo:
-
-1. You can add/remove stocks to a personal list, and query together
-
 ###Change log:
 
-1.1
+1.2 Aug 26, 2013
+
+1. Supports personal list, try "gp {add code,code .../remove code/list}"
+2. One request only, save time, save resource
+3. Workflows.php supports creating multi-level directories
+
+1.1 Aug 23, 2013
 
 1. Customized the appearance of stocks under suspension of trading
 2. Aligned result list
 
-1.0
+1.0 Aug 22, 2013
 
 1. Basic query capabilities, either by code and Pinyin
 

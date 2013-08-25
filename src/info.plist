@@ -3,9 +3,20 @@
 <plist version="1.0">
 <dict>
 	<key>bundleid</key>
-	<string>zhxl.me/#stock</string>
+	<string>zhxl.me/workflows/stock</string>
 	<key>connections</key>
 	<dict>
+		<key>5F0D1213-349D-42C3-849C-D6A02842F975</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>C32C3EDC-DB46-4B67-87C6-65DE80CC6BD7</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>F84D66DC-337F-4864-938C-53D630D887A1</key>
 		<array>
 			<dict>
@@ -25,7 +36,7 @@
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
-	<string>股票行情</string>
+	<string>中国股票行情</string>
 	<key>objects</key>
 	<array>
 		<dict>
@@ -42,7 +53,9 @@
 				<key>script</key>
 				<string>require_once('stock.php');
 $stock = new Stock();
-echo $stock-&gt;query("{query}");</string>
+//echo $stock-&gt;query("{query}");
+$stock-&gt;result(0,$stock-&gt;data(),'$stock-&gt;data()', $stock-&gt;data(), "aa");
+echo $stock-&gt;toxml();</string>
 				<key>subtext</key>
 				<string>感谢新浪无私提供API，省了大麻烦了</string>
 				<key>title</key>
@@ -76,11 +89,75 @@ echo $stock-&gt;query("{query}");</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>script</key>
+				<string>require_once('stock.php');
+$s = new Stock();
+$s-&gt;add("{query}");</string>
+				<key>type</key>
+				<integer>1</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.script</string>
+			<key>uid</key>
+			<string>C32C3EDC-DB46-4B67-87C6-65DE80CC6BD7</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>gpadd</string>
+				<key>subtext</key>
+				<string>您可以输入股票简拼或代码</string>
+				<key>text</key>
+				<string>添加股票到自选</string>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.keyword</string>
+			<key>uid</key>
+			<string>5F0D1213-349D-42C3-849C-D6A02842F975</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
 	</array>
 	<key>readme</key>
-	<string></string>
+	<string>###更新历史:
+
+1.1
+
+功能
+
+1. 加入对停牌的显示
+2. 排版优化
+
+
+1.0
+
+ 功能
+
+1. 基本功能，包括通过简拼以及代码查询股票，选择相应股票回车可以打开网页</string>
 	<key>uidata</key>
 	<dict>
+		<key>5F0D1213-349D-42C3-849C-D6A02842F975</key>
+		<dict>
+			<key>ypos</key>
+			<real>130</real>
+		</dict>
+		<key>C32C3EDC-DB46-4B67-87C6-65DE80CC6BD7</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
 		<key>DDC36430-3A5E-46DF-A690-3E0D03CCB517</key>
 		<dict>
 			<key>ypos</key>

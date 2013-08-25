@@ -42,11 +42,11 @@ class Workflows {
 		$this->data  = $this->home. "/Library/Application Support/Alfred 2/Workflow Data/".$this->bundle;
 
 		if ( !file_exists( $this->cache ) ):
-			exec("mkdir '".$this->cache."'");
+			exec("mkdir -p '".$this->cache."'");
 		endif;
 
 		if ( !file_exists( $this->data ) ):
-			exec("mkdir '".$this->data."'");
+			exec("mkdir -p '".$this->data."'");
 		endif;
 
 		$this->results = array();
