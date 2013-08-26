@@ -14,7 +14,7 @@ Realtime China stock quotation, support all companies &amp; indexes of Shanghai 
 
 1. gp list
 
-![Show personal list](https://github.com/larryzh/alfred.workflow.chinastockquotation/blob/master/assets/list.png "Personal list")
+![Show personal list](https://github.com/larryzh/alfred.workflow.chinastockquotation/blob/master/assets/list.jpg "Personal list")
 
 ###Change log:
 
