@@ -1,9 +1,6 @@
 <?php
 require_once('workflows.php');
 
-// TODO: To support batch query.
-// TODO: To use local storage to save a personal list.
-
 class Stock extends Workflows {
 
     private $types = array('sh', 'sz');
