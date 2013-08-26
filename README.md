@@ -13,12 +13,11 @@ Realtime China stock quotation, support all companies &amp; indexes of Shanghai 
 ###Examples:
 
 1. gp list
-
-![Show personal list](https://github.com/larryzh/alfred.workflow.chinastockquotation/blob/master/assets/list.jpg?raw=true "Personal list")
-
+ ![Show personal list](https://github.com/larryzh/alfred.workflow.chinastockquotation/blob/master/assets/list.jpg?raw=true "Personal list")
 2. query by code
-
-![Query by code](https://github.com/larryzh/alfred.workflow.chinastockquotation/blob/master/assets/query_by_code.png?raw=true "Results of querying by code")
+ ![Query by code](https://github.com/larryzh/alfred.workflow.chinastockquotation/blob/master/assets/query_by_code.png?raw=true "Results of querying by code")
+3. query by pinyin
+ ![Query by pinyin](https://github.com/larryzh/alfred.workflow.chinastockquotation/blob/master/assets/query_by_pinyin.png?raw=true "Results of querying by pinyin")
 
 ###Change log:
 
