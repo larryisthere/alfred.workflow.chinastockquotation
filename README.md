@@ -18,7 +18,7 @@ Realtime China stock quotation, support all companies &amp; indexes of Shanghai 
 
 2. query by code
 
-![Query by code](https://github.com/larryzh/alfred.workflow.chinastockquotation/blob/master/assets/query_by_code.png "Results of querying by code")
+![Query by code](https://github.com/larryzh/alfred.workflow.chinastockquotation/blob/master/assets/query_by_code.png?raw=true "Results of querying by code")
 
 ###Change log:
 
