@@ -5,7 +5,7 @@ Realtime China stock quotation, support all companies &amp; indexes of Shanghai 
 
 ###Usage:
 
-1. Download ChinaStockQuotation.alfredworkflow, double click to install
+1. Download [ChinaStockQuotation.alfredworkflow](https://github.com/larryzh/alfred.workflow.chinastockquotation/raw/master/bundle/ChinaStockQuotation.alfredworkflow?raw=true), double click to install
 2. Type "gp {code|pinyin}" and wait ...
 3. Stock is right there
 4. Stroke "Enter" to open a webpage of that stock with default browse
