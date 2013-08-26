@@ -1,7 +1,7 @@
 alfred.workflow.chinastockquotation
 ===================================
 
-Realtime China stock quotation, support all companies &amp; indexes of Shanghai exchange and Shenzhen exchange.
+This is a [Alfred](http://www.alfredapp.com/powerpack/)'s workflow(sorta plugin). This workflow is about China's stock quotation which supports realtime China stock quotation, including all companies &amp; indexes of Shanghai exchange and Shenzhen exchange.
 
 ###Usage:
 
