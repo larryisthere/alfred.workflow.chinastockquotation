@@ -196,8 +196,6 @@ class Stock extends Workflows {
     public function add($codes_str) {
 
         $duplicates = array();
-        $codes_str = $this->filter_code($codes_str);
-        if($codes_str == "") return false;
         $list = $list_ori = $this->read($this->config);
         $list = is_array($list) ? $list : array($list);
         $codes_arr = explode(",", trim($codes_str));
@@ -295,37 +293,40 @@ class Stock extends Workflows {
     * @return null - show result directly
     *
     */
-    protected function operate($querystring) {
-        $codes = $this->filter_code($querystring[1]);
-        if($codes!="") {
-            switch($querystring[0]) {
-                case 'add':
-                    $param = trim($querystring[1]);
-                    if($param != "" && $result = $this->add($param)) {
-                        $tmp_str = "";
-                        if(count($result['added'])) {
-                            $tmp_str .= implode(",", $result['added']).' 已添加到自选股 ';
-                        }
-                        if(count($result['duplicates'])) {
-                            $tmp_str .= implode(",", $result['duplicates'])." 重复了";
-                        }
-                        $this->notice($tmp_str);
-                    } else {
-                        $this->notice('输入的代码有误，请检查');
-                    }
-                    break;
-                case 'remove':
-                    if($this->remove($querystring[1])) {
-                        $this->notice('移除 '.$querystring[1].' 成功');
-                    } else {
-                        $this->notice($querystring[1].'不在您的自选列表中');
-                    }
-                    break;
-                default:
-                    $this->notice('目前仅支持: ','add 股票代码,... - 添加到自选; remove 股票代码 - 从自选股删除; list - 显示自选股');
-            }
+    protected function operate($cmd, $param) {
+        if(!in_array($cmd, array('add', 'remove'))) {
+            $this->notice('目前仅支持: ','add 股票代码,... - 添加到自选; remove 股票代码 - 从自选股删除; list - 显示自选股');
         } else {
-            $this->notice('输入的代码有误，请检查');
+            $param = $this->filter_code(trim($param));
+            if($param!="") {
+                switch($cmd) {
+                    case 'add':
+                        if($result = $this->add($param)) {
+                            $tmp_str = "";
+                            if(count($result['added'])) {
+                                $tmp_str .= implode(",", $result['added']).' 已添加到自选股 ';
+                            }
+                            if(count($result['duplicates'])) {
+                                $tmp_str .= implode(",", $result['duplicates'])." 重复了";
+                            }
+                            $this->notice($tmp_str);
+                        } else {
+                            $this->notice('输入的代码有误，请检查');
+                        }
+                        break;
+                    case 'remove':
+                        if($this->remove($param)) {
+                            $this->notice('移除 '.$param.' 成功');
+                        } else {
+                            $this->notice($param.' 不在您的自选列表中');
+                        }
+                        break;
+                    default:
+                        $this->notice('目前仅支持: ','add 股票代码,... - 添加到自选; remove 股票代码 - 从自选股删除; list - 显示自选股');
+                }
+            } else {
+                $this->notice('您暂时只能通过股票代码进行操作');
+            }
         }
         if(count($this->results())>0) {
             return $this->toxml();
@@ -345,7 +346,7 @@ class Stock extends Workflows {
         if(count($querystring) == 1) {
             return $this->query($querystring[0]);
         } else {
-            return $this->operate($querystring);
+            return $this->operate($querystring[0], $querystring[1]);
         }
     }
 }
