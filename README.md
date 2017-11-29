@@ -27,7 +27,7 @@ This is a [Alfred](http://www.alfredapp.com/powerpack/)'s workflow(sorta plugin)
 ###Change log:
 
 ######1.3 Nov 29, 2017
-* 修订拼音不能搜索的问题
+* 修订拼音不能搜索的问题
 
 ######1.2 Aug 26, 2013
 
