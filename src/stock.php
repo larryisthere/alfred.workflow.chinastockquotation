@@ -1,8 +1,8 @@
 <?php
 require_once('workflows.php');
 
-class Stock extends Workflows {
-
+class Stock extends Workflows
+{
     private $types = array('sh', 'sz');
     private $api = array('price'=> 'http://hq.sinajs.cn/list=', 'info' => 'http://suggest3.sinajs.cn/suggest/name=info&key=');
     private $stocks = array();
@@ -15,17 +15,20 @@ class Stock extends Workflows {
     * @param string - a url that will be requested
     * @return string - the data returned by the remote API
     */
-    protected function curl($url) {
+    protected function curl($url)
+    {
         $return   = array();
-        $response = explode("\n",iconv("GBK","UTF-8",$this->request($url)));
-        if($response[count($response)-1] == "") {
+        $response = explode("\n", iconv("GBK", "UTF-8", $this->request($url)));
+        if ($response[count($response)-1] == "") {
             array_pop($response);
         }
         foreach ($response as $key => $value) {
             preg_match("/\_([\w\d]{8})\=/", $value, $matches);
             eval(preg_replace('/^(.+)\=/i', '$data = ', $value));
-            if($data=="") continue;
-            if(count($matches)) {
+            if ($data=="") {
+                continue;
+            }
+            if (count($matches)) {
                 $code = $matches[1];
                 $type = substr($code, 0, 2);
                 $code = substr($code, 2);
@@ -44,10 +47,13 @@ class Stock extends Workflows {
     * @param string - a company's code with its exchange flag at the beginning
     * @return null - but store results in a local variable $this->stock
     */
-    protected function get_quotation($numbers){
+    protected function get_quotation($numbers)
+    {
         $keys = array('type','code','name', 'opening', 'closing', 'now', 'high', 'low', 'buy', 'sell', 'volume', 'amount', '买一量', '买一价', '买二量', '买二价', '买三量', '买三价', '买四量', '买四价', '买五量', '买五价', '卖一量', '卖一价', '卖二量', '卖二价', '卖三量', '卖三价', '卖四量', '卖四价', '卖五量', '卖五价', 'date', 'time', 'other');
         $stocks = $this->curl($this->api['price'] . "$numbers");
-        if(!is_array($stocks)) return;
+        if (!is_array($stocks)) {
+            return;
+        }
         $numbers_arr = explode(",", $numbers);
         foreach ($stocks as $key => $stock) {
             $values = explode(",", $stock);
@@ -63,24 +69,35 @@ class Stock extends Workflows {
     * @return array - contains the stock information of at least one conpany
     *         false - if there's no match
     */
-    protected function get_code($chars) {
-        $keys = array('brief', 'board', 'code', 'Code', 'name', 'pinyin');
+    protected function get_code($chars)
+    {
+        $keys = array('brief', 'board', 'code', 'Code', 'name', 'pinyin', 'name2', 'key2');
         
         $info = $this->curl($this->api['info'].$chars);
-        function combine(&$value, $key, $keys) {
+        function combine(&$value, $key, $keys)
+        {
             $arr_values = explode(',', $value);
-            if(count($arr_values) == count($keys)) {
+            if (count($keys) > count($arr_values)) {
+                $keys = array_slice($keys, 0, count($arr_values));
+            }
+            $value = array_combine($keys, $arr_values);
+
+            if (count($arr_values) == count($keys)) {
                 $value = array_combine($keys, $arr_values);
             } else {
                 $value = array();
             }
         }
 
-        function filter($data) {
-            if(count($data) > 0 && $data['board'] == '11') return $data;
+
+        function filter($data)
+        {
+            if (count($data) > 0 && $data['board'] == '11') {
+                return $data;
+            }
         }
 
-        if(count($info) == 0) {
+        if (count($info) == 0) {
             $rt = array();
         } else {
             $values = explode(";", $info[0]);
@@ -99,12 +116,13 @@ class Stock extends Workflows {
     * @return string - only 6 digits code will be return
     *
     */
-    protected function filter_code($chars) {
+    protected function filter_code($chars)
+    {
         $return = array();
-        if(trim($chars) != "") {
+        if (trim($chars) != "") {
             $char_arr = explode(",", $chars);
             foreach ($char_arr as $key => $char) {
-                if(preg_match('/^\d{6}$/', $char)) {
+                if (preg_match('/^\d{6}$/', $char)) {
                     array_push($return, $char);
                 }
             }
@@ -120,7 +138,8 @@ class Stock extends Workflows {
     * @return boolean - true if there is, otherwise false
     *
     */
-    protected function check_availability($code) {
+    protected function check_availability($code)
+    {
         $param_arr = array();
         foreach ($this->types as $key => $value) {
             array_push($param_arr, $value.$code);
@@ -138,9 +157,12 @@ class Stock extends Workflows {
     * @return string - xml-formatted string with pre-defined format
     *
     */
-    protected function notice($title, $detail = "") {
-        if(trim($title)=="") return;
-        $this->result('0','null',$title,$detail,'tip.png');
+    protected function notice($title, $detail = "")
+    {
+        if (trim($title)=="") {
+            return;
+        }
+        $this->result('0', 'null', $title, $detail, 'tip.png');
     }
 
     /**
@@ -150,12 +172,13 @@ class Stock extends Workflows {
     * @return string - xml of alfred recognized format
     *
     */
-    protected function output() {
-        // $suggest->id, $suggest->alt, $suggest->title, '作者: '. implode(",", $suggest->author) .' 评分: '. $suggest->rating->average .'/'. $suggest->rating->numRaters .' 标签: '. implode(",", array_map('get_name', $suggest->tags)), 'C5C34466-B858-4F14-BF5E-FD05FA0903DA.png' 
+    protected function output()
+    {
+        // $suggest->id, $suggest->alt, $suggest->title, '作者: '. implode(",", $suggest->author) .' 评分: '. $suggest->rating->average .'/'. $suggest->rating->numRaters .' 标签: '. implode(",", array_map('get_name', $suggest->tags)), 'C5C34466-B858-4F14-BF5E-FD05FA0903DA.png'
         foreach ($this->stocks as $key => $value) {
             $now    = intval($value['now']);
             $now    = $now > 0 ? $value['now'] : '停牌';
-            if(is_numeric($now)) {
+            if (is_numeric($now)) {
                 $change = round(($value['now']-$value['closing'])/$value['closing']*10000)/100;
                 $change = ($change > 0 ? '+'.$change : $change).'%';
             } else {
@@ -168,8 +191,8 @@ class Stock extends Workflows {
             $arg    = "http://finance.sina.com.cn/realstock/company/".$value['type'].$value['code']."/nc.shtml";
             $this->result(md5($name), $arg, $value['code'].'  '.$name.'  '.$now.'  '.$change, '量: '.$volume.'手 额: '. $amount.'万 买: '.$value['buy'].' 卖: '.$value['sell'].' 高: '.$value['high'].' 低: '.$value['low'].' 开: '.$value['opening'].' 收: '.$value['closing'], $value['type'].'.png');
         }
-        if(count($this->results()) == 0) {
-            $this->notice('没能找到相应的股票','您可能输入了错误的代码，请检查一下吧');
+        if (count($this->results()) == 0) {
+            $this->notice('没能找到相应的股票', '您可能输入了错误的代码，请检查一下吧');
         }
         return $this->toxml();
     }
@@ -183,34 +206,36 @@ class Stock extends Workflows {
     *
     */
 
-    protected function add_traversely($code, &$target, &$duplicates) {
+    protected function add_traversely($code, &$target, &$duplicates)
+    {
         $result = $this->check_availability($code);
-        if(!$result) return false;
-        if(!in_array($result, $target)) {
+        if (!$result) {
+            return false;
+        }
+        if (!in_array($result, $target)) {
             array_push($target, $result);
         } else {
             array_push($duplicates, $code);
         }
     }
 
-    public function add($codes_str) {
-
+    public function add($codes_str)
+    {
         $duplicates = array();
         $list = $list_ori = $this->read($this->config);
         $list = is_array($list) ? $list : array($list);
         $codes_arr = explode(",", trim($codes_str));
-        if(is_array($codes_arr)) {
+        if (is_array($codes_arr)) {
             foreach ($codes_arr as $key => $value) {
                 $this->add_traversely(trim($value), $list, $duplicates);
             }
         } else {
             $this->add_traversely($codes_str, $list, $duplicates);
         }
-        if($list != $list_ori || count($duplicates) != 0) {
+        if ($list != $list_ori || count($duplicates) != 0) {
             $this->write($list, $this->config);
             return array('result'=>true, 'added'=>array_diff($codes_arr, $duplicates), 'duplicates'=>$duplicates);
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -223,16 +248,19 @@ class Stock extends Workflows {
     * @return notice - system notice center will show the notice of success.
     *
     */
-    public function remove($code) {
+    public function remove($code)
+    {
         $list = $this->read($this->config);
-        if(!is_array($list)) return false;
+        if (!is_array($list)) {
+            return false;
+        }
         foreach ($list as $key => $value) {
-            if(preg_match('/'.$code.'$/', $value)) {
+            if (preg_match('/'.$code.'$/', $value)) {
                 $position = $key;
                 break;
             }
         }
-        if(is_numeric($position)) {
+        if (is_numeric($position)) {
             array_splice($list, $position, 1);
             $this->write($list, $this->config);
             return true;
@@ -248,9 +276,12 @@ class Stock extends Workflows {
     * @return string - xml formatted data for alfred
     *
     */
-    public function show() {
+    public function show()
+    {
         $list = $this->read($this->config);
-        if(!is_array($list) || count($list) == 0) return false;
+        if (!is_array($list) || count($list) == 0) {
+            return false;
+        }
         $this->get_quotation(implode(",", $list));
         return true;
     }
@@ -263,14 +294,15 @@ class Stock extends Workflows {
     * @return string - a xml formatted for alfred
     *
     */
-    protected function query($chars) {
+    protected function query($chars)
+    {
         $param_arr = array();
-        if($chars == 'list'){
-            if(!$this->show()) {
+        if ($chars == 'list') {
+            if (!$this->show()) {
                 $this->notice('您还未添加自选股', '输入 {add+空格+股票代码(多个可以都好分隔)} 添加');
                 return $this->toxml();
             }
-        } elseif(preg_match('/^\d{6}$/', $chars)) {
+        } elseif (preg_match('/^\d{6}$/', $chars)) {
             foreach ($this->types as $key => $value) {
                 array_push($param_arr, $value.$chars);
             }
@@ -293,20 +325,21 @@ class Stock extends Workflows {
     * @return null - show result directly
     *
     */
-    protected function operate($cmd, $param) {
-        if(!in_array($cmd, array('add', 'remove'))) {
-            $this->notice('目前仅支持: ','add 股票代码,... - 添加到自选; remove 股票代码 - 从自选股删除; list - 显示自选股');
+    protected function operate($cmd, $param)
+    {
+        if (!in_array($cmd, array('add', 'remove'))) {
+            $this->notice('目前仅支持: ', 'add 股票代码,... - 添加到自选; remove 股票代码 - 从自选股删除; list - 显示自选股');
         } else {
             $param = $this->filter_code(trim($param));
-            if($param!="") {
-                switch($cmd) {
+            if ($param!="") {
+                switch ($cmd) {
                     case 'add':
-                        if($result = $this->add($param)) {
+                        if ($result = $this->add($param)) {
                             $tmp_str = "";
-                            if(count($result['added'])) {
+                            if (count($result['added'])) {
                                 $tmp_str .= implode(",", $result['added']).' 已添加到自选股 ';
                             }
-                            if(count($result['duplicates'])) {
+                            if (count($result['duplicates'])) {
                                 $tmp_str .= implode(",", $result['duplicates'])." 重复了";
                             }
                             $this->notice($tmp_str);
@@ -315,20 +348,20 @@ class Stock extends Workflows {
                         }
                         break;
                     case 'remove':
-                        if($this->remove($param)) {
+                        if ($this->remove($param)) {
                             $this->notice('移除 '.$param.' 成功');
                         } else {
                             $this->notice($param.' 不在您的自选列表中');
                         }
                         break;
                     default:
-                        $this->notice('目前仅支持: ','add 股票代码,... - 添加到自选; remove 股票代码 - 从自选股删除; list - 显示自选股');
+                        $this->notice('目前仅支持: ', 'add 股票代码,... - 添加到自选; remove 股票代码 - 从自选股删除; list - 显示自选股');
                 }
             } else {
                 $this->notice('您暂时只能通过股票代码进行操作');
             }
         }
-        if(count($this->results())>0) {
+        if (count($this->results())>0) {
             return $this->toxml();
         }
     }
@@ -339,11 +372,12 @@ class Stock extends Workflows {
     *
     * @param string - could be a stock code or a short form of a company's name
     * @return string - xml formatted data for alfred showing
-    * 
+    *
     */
-    public function controller($chars) {
+    public function controller($chars)
+    {
         $querystring = preg_split('/\s+/', trim(stripslashes($chars)));
-        if(count($querystring) == 1) {
+        if (count($querystring) == 1) {
             return $this->query($querystring[0]);
         } else {
             return $this->operate($querystring[0], $querystring[1]);
