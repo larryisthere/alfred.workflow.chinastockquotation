@@ -180,6 +180,13 @@ class Stock extends Workflows
             $now    = $now > 0 ? $value['now'] : '停牌';
             if (is_numeric($now)) {
                 $change = round(($value['now']-$value['closing'])/$value['closing']*10000)/100;
+                if ($change > 0) {
+                    $icon = 'up';
+                } else if ($change < 0) {
+                    $icon = 'down';
+                } else {
+                    $icon = 'nochange';
+                }
                 $change = ($change > 0 ? '+'.$change : $change).'%';
             } else {
                 $change = '';
@@ -189,7 +196,13 @@ class Stock extends Workflows
             $volume = floor($value['volume'] / 100);
             $amount = floor($value['amount'] / 10000);
             $arg    = "http://finance.sina.com.cn/realstock/company/".$value['type'].$value['code']."/nc.shtml";
-            $this->result(md5($name), $arg, $value['code'].'  '.$name.'  '.$now.'  '.$change, '量: '.$volume.'手 额: '. $amount.'万 买: '.$value['buy'].' 卖: '.$value['sell'].' 高: '.$value['high'].' 低: '.$value['low'].' 开: '.$value['opening'].' 收: '.$value['closing'], $value['type'].'.png');
+            $this->result(
+                md5($name),
+                $arg,
+                $value['code'].'  '.$name.'  '.$now.'  '.$change,
+                '量: '.$volume.'手 额: '. $amount.'万 买: '.$value['buy'].' 卖: '.$value['sell'].' 高: '.$value['high'].' 低: '.$value['low'].' 开: '.$value['opening'].' 收: '.$value['closing'],
+                $icon.'.png'
+            );
         }
         if (count($this->results()) == 0) {
             $this->notice('没能找到相应的股票', '您可能输入了错误的代码，请检查一下吧');
