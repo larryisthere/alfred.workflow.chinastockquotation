@@ -201,7 +201,7 @@ class Stock extends Workflows
             $this->result(
                 md5($name),
                 $arg,
-                $value['code'].'  '.$name.'  '.$now.'  '.$change,
+                $value['type'].'  '.$value['code'].'  '.$name.'  '.$now.'  '.$change,
                 '量: '.$volume.'手 额: '. $amount.'万 买: '.$value['buy'].' 卖: '.$value['sell'].' 高: '.$value['high'].' 低: '.$value['low'].' 开: '.$value['opening'].' 收: '.$value['closing'],
                 $icon.'.png'
             );
