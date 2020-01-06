@@ -57,7 +57,9 @@ class Stock extends Workflows
         $numbers_arr = explode(",", $numbers);
         foreach ($stocks as $key => $stock) {
             $values = explode(",", $stock);
-            array_push($this->stocks, array_combine($keys, $values));
+            $min_len = min(count($keys),count($values));
+            $array_combine = array_combine(array_slice($keys,0,$min_len), array_slice($values,0,$min_len));
+            array_push($this->stocks, $array_combine);
         }
     }
 
@@ -199,7 +201,7 @@ class Stock extends Workflows
             $this->result(
                 md5($name),
                 $arg,
-                $value['code'].'  '.$name.'  '.$now.'  '.$change,
+                $value['type'].'  '.$value['code'].'  '.$name.'  '.$now.'  '.$change,
                 '量: '.$volume.'手 额: '. $amount.'万 买: '.$value['buy'].' 卖: '.$value['sell'].' 高: '.$value['high'].' 低: '.$value['low'].' 开: '.$value['opening'].' 收: '.$value['closing'],
                 $icon.'.png'
             );
