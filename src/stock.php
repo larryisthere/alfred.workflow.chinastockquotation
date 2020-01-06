@@ -57,7 +57,9 @@ class Stock extends Workflows
         $numbers_arr = explode(",", $numbers);
         foreach ($stocks as $key => $stock) {
             $values = explode(",", $stock);
-            array_push($this->stocks, array_combine($keys, $values));
+            $min_len = min(count($keys),count($values));
+            $array_combine = array_combine(array_slice($keys,0,$min_len), array_slice($values,0,$min_len));
+            array_push($this->stocks, $array_combine);
         }
     }
 
