@@ -54,9 +54,13 @@ class Stock extends Workflows
         if (!is_array($stocks)) {
             return;
         }
+        $len = count($keys);
         $numbers_arr = explode(",", $numbers);
         foreach ($stocks as $key => $stock) {
             $values = explode(",", $stock);
+            if (count($values) > $len) {
+                $values = array_slice($values, 0, $len);
+            }
             array_push($this->stocks, array_combine($keys, $values));
         }
     }
